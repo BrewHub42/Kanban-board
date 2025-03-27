@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Jaini&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Jaini", system-ui;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #222831;
+}
+
+.board {
+    display: flex;
+    gap: 20px;
+}
+
+.column{
+    background-color: #393e46;
+    width: 300px;
+    min-height: 400px;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 10px;
+}
+
+.column h2 {
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.tasks{
+    min-height: 400px;
+}
+
+.task-input{
+    width: 100%;
+    padding: 10px 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+.add-task{
+    width: 100%;
+    padding: 10px 5px;
+    border-radius: 4px;
+    border: none;
+    background-color: #4F46E5;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.add-task:hover {
+    background-color: #372edf;
+}
+
+.card {
+    background-color: #e1d89f;
+    padding: 10px;
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    color: #000;
+    cursor: grab;
+    transition: all 0.3s ease;
+}
+
+.card:hover{
+    transform: scale(1.05);
+}

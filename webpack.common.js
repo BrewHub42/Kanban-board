@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { library } = require('webpack');
 
 module.exports = {
     entry: {
@@ -15,6 +16,8 @@ module.exports = {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),
         clean: true,
+        library: 'lib',
+        libraryTarget: 'window',
     },
     module: {
         rules: [
