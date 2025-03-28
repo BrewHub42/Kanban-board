@@ -3,6 +3,8 @@ let draggedCard = null;
 let rightClickedCard = null;
 let boardColumns = ['todo', 'doing', 'done'];
 
+document.addEventListener('DOMContentLoaded', loadTasksToLocalStorage);
+
 export function addTask(columnId){
     const input = document.getElementById(`${columnId}-input`);
     const taskText = input.value;
@@ -17,6 +19,7 @@ export function addTask(columnId){
 
     document.getElementById(`${columnId}-tasks`).appendChild(taskElement);
     updateTasksCount(columnId);
+    saveTasksToLocalStorage(columnId, taskText, taskDate);
     input.value = "";
 }
 
@@ -72,6 +75,7 @@ function dragEnd(){
     draggedCard = null;
     boardColumns.forEach(columnId => {
         updateTasksCount(columnId);
+        updateLocalStorage();
     });
 }
 
@@ -91,15 +95,17 @@ export function editTask() {
         const newTaskText = prompt('Edit task:-', rightClickedCard.textContent);
         if(newTaskText !== ""){
             rightClickedCard.textContent = newTaskText;
+            updateLocalStorage();
         }
     }
 }
 
 export function deleteTask(){
-    
     if(rightClickedCard !== null){
-        let columnId = rightClickedCard.parentNode.id;
+        const columnId = rightClickedCard.parentNode.id;
         rightClickedCard.remove();
+
+        updateLocalStorage();
         updateTasksCount(columnId.split("-")[0]);
     }
 }
@@ -107,4 +113,33 @@ export function deleteTask(){
 function updateTasksCount(columnId) {
     const count = document.querySelectorAll(`#${columnId}-tasks .card`).length;
     document.getElementById(`${columnId}-count`).textContent = count;
+}
+
+function saveTasksToLocalStorage(columnId, taskText, taskDate) {
+    const tasks = JSON.parse(localStorage.getItem(columnId)) || [];
+    tasks.push({text:taskText, date:taskDate});
+    localStorage.setItem(columnId, JSON.stringify(tasks));
+}
+
+function loadTasksToLocalStorage() {
+    boardColumns.forEach(columnId => {
+        const tasks = JSON.parse(localStorage.getItem(columnId)) || [];
+        tasks.forEach(({text, date}) => {
+            const taskElement = createTaskElement(text, date);
+            document.getElementById(`${columnId}-tasks`).appendChild(taskElement);
+        });
+        updateTasksCount(columnId);
+    });
+}
+
+function updateLocalStorage() {
+    boardColumns.forEach(columnId => {
+        const tasks =  [];
+        document.querySelectorAll(`#${columnId}-tasks .card`).forEach((card) => {
+            const taskText = card.querySelector('span').textContent;
+            const taskDate = card.querySelector('small').textContent;
+            tasks.push({text: taskText, date: taskDate});
+        });
+        localStorage.setItem(columnId, JSON.stringify(tasks));
+    });
 }
