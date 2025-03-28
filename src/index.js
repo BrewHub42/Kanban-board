@@ -1,6 +1,7 @@
 import "./styles.css";
 let draggedCard = null;
 let rightClickedCard = null;
+let boardColumns = ['todo', 'doing', 'done'];
 
 export function addTask(columnId){
     const input = document.getElementById(`${columnId}-input`);
@@ -10,17 +11,21 @@ export function addTask(columnId){
         return;
     }
 
-    const taskElement = createTaskElement(taskText);
-    // console.log(taskElement);
+    const taskDate = new Date().toLocaleString();
+    const taskElement = createTaskElement(taskText, taskDate);
+
 
     document.getElementById(`${columnId}-tasks`).appendChild(taskElement);
-
+    updateTasksCount(columnId);
     input.value = "";
 }
 
-function createTaskElement(taskText){
+function createTaskElement(taskText, taskDate){
     const element = document.createElement('div');
-    element.textContent = taskText;
+    element.innerHTML = 
+                        `<span>${taskText}</span><br>
+                         <small class="time">${taskDate}</small>`;
+    
     element.classList.add('card');
     element.setAttribute('draggable', 'true');
 
@@ -65,6 +70,9 @@ function dragStart(){
 function dragEnd(){
     this.classList.remove('dragging');
     draggedCard = null;
+    boardColumns.forEach(columnId => {
+        updateTasksCount(columnId);
+    });
 }
 
 const columns = document.querySelectorAll('.column .tasks');
@@ -88,7 +96,15 @@ export function editTask() {
 }
 
 export function deleteTask(){
+    
     if(rightClickedCard !== null){
+        let columnId = rightClickedCard.parentNode.id;
         rightClickedCard.remove();
+        updateTasksCount(columnId.split("-")[0]);
     }
+}
+
+function updateTasksCount(columnId) {
+    const count = document.querySelectorAll(`#${columnId}-tasks .card`).length;
+    document.getElementById(`${columnId}-count`).textContent = count;
 }
