@@ -87,13 +87,41 @@ columns.forEach(column => {
 
 function dragOver(event){
     event.preventDefault();
-    this.appendChild(draggedCard);
+    const afterElement = getDragAfterElement(this, event.pageY);
+
+    if (afterElement === null){
+        this.appendChild(draggedCard);
+    } else {
+        this.insertBefore(draggedCard, afterElement);
+    }
+}
+
+function getDragAfterElement(container, y){
+    const draggableElements = [
+        ...container.querySelectorAll('.card:not(.dragging)'),
+    ];
+
+    const result = draggableElements.reduce(
+        (closestElementUnderMouse, currentTask) => {
+            const box = currentTask.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closestElementUnderMouse.offset) {
+                return {offset: offset, element: currentTask};
+            } else {
+                return closestElementUnderMouse;
+            }
+        }, 
+        {offset: Number.NEGATIVE_INFINITY}
+    );
+    return result.element;
 }
 
 export function editTask() {
     if (rightClickedCard !== null){
-        const newTaskText = prompt('Edit task:-', rightClickedCard.textContent);
-        if(newTaskText !== ""){
+        const newTaskText = prompt('Edit task:-', rightClickedCard.querySelector('span').textContent);
+        // console.log(newTaskText);
+        
+        if(newTaskText && newTaskText !== ""){
             rightClickedCard.textContent = newTaskText;
             updateLocalStorage();
         }
